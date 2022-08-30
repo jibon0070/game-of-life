@@ -13,7 +13,7 @@ export default class Game {
     /**
      * @type {number}
      */
-    #number_of_cells_in_a_row = 400;
+    #number_of_cells_in_a_row = 200;
     /**
      * @type {number}
      */
@@ -117,145 +117,42 @@ export default class Game {
                 const is_bottom_row = y === this.#number_of_cells_in_a_row - 1
                 const is_left_row = x === 0;
                 const is_right_row = x === this.#number_of_cells_in_a_row - 1;
-                let values;
-                if (is_top_row && is_left_row) {
-                    /*
-                    right,
-                    bottom right,
-                    bottom
-                      */
-                    values = [
-                        copy[y][x + 1],
-                        copy[y + 1][x + 1],
-                        copy[y + 1][x]
-                    ]
-                } else if (is_top_row && is_right_row) {
-                    /*
-                    left,
-                    bottom left,
-                    bottom
-                    */
-                    values = [
-                        copy[y][x - 1],
-                        copy[y + 1][x - 1],
-                        copy[y + 1][x]
-                    ]
-                } else if (is_bottom_row && is_right_row) {
-                    /*
-                    top,
-                    left,
-                    top left
-                    */
-                    values = [
-                        copy[y - 1][x],
-                        copy[y][x - 1],
-                        copy[y - 1][x - 1]
-                    ]
-                } else if (is_bottom_row && is_left_row) {
-                    /*
-                    top,
-                    top right,
-                    right
-                    */
-                    values = [
-                        copy[y - 1][x],
-                        copy[y - 1][x + 1],
-                        copy[y][x + 1]
-                    ]
-                } else if (is_top_row) {
-                    /*
-                    right,
-                    bottom right,
-                    bottom,
-                    bottom left,
-                    left
-                    */
-                    values = [
-                        copy[y][x + 1],
-                        copy[y + 1][x + 1],
-                        copy[y + 1][x],
-                        copy[y + 1][x - 1],
-                        copy[y][x - 1]
-                    ]
-                } else if (is_right_row) {
-                    /*
-                    top,
-                    bottom,
-                    bottom left,
-                    left,
-                    top left
-                    */
-                    values = [
-                        copy[y - 1][x],
-                        copy[y + 1][x],
-                        copy[y + 1][x - 1],
-                        copy[y][x - 1],
-                        copy[y - 1][x - 1]
-                    ]
-                } else if (is_bottom_row) {
-                    /*
-                    top,
-                    top right,
-                    right,
-                    left,
-                    top left
-                    */
-                    values = [
-                        copy[y - 1][x],
-                        copy[y - 1][x + 1],
-                        copy[y][x + 1],
-                        copy[y][x - 1],
-                        copy[y - 1][x - 1]
-                    ]
-                } else if (is_left_row) {
-                    /*
-                    top,
-                    top right,
-                    right,
-                    bottom right,
-                    bottom
-                    */
-                    values = [
-                        copy[y - 1][x],
-                        copy[y - 1][x + 1],
-                        copy[y][x + 1],
-                        copy[y + 1][x + 1],
-                        copy[y + 1][x]
-                    ]
-                } else {
-                    /*
-                    top,
-                    top right,
-                    right,
-                    bottom right,
-                    bottom,
-                    bottom left,
-                    left,
-                    top left
-                    */
-                    values = [
-                        copy[y - 1][x],
-                        copy[y - 1][x + 1],
-                        copy[y][x + 1],
-                        copy[y + 1][x + 1],
-                        copy[y + 1][x],
-                        copy[y + 1][x - 1],
-                        copy[y][x - 1],
-                        copy[y - 1][x - 1]
-                    ]
-                }
-                const living_cells = [...values].filter(cell => cell === 1);
+                let alive = 0;
+                //top
+                if (!is_top_row)
+                    alive += copy[y - 1][x];
+                //top right
+                if (!is_top_row && !is_right_row)
+                    alive += copy[y - 1][x + 1];
+                //right
+                if (!is_right_row)
+                    alive += copy[y][x + 1];
+                //bottom right
+                if (!is_bottom_row && !is_right_row)
+                    alive += copy[y + 1][x + 1];
+                //bottom
+                if (!is_bottom_row)
+                    alive += copy[y + 1][x]
+                //bottom left
+                if (!is_bottom_row && !is_left_row)
+                    alive += copy[y + 1][x - 1];
+                //left
+                if (!is_left_row)
+                    alive += copy[y][x - 1];
+                //top left
+                if (!is_top_row && !is_left_row)
+                    alive += copy[y - 1][x - 1];
                 if (value === 1) {
-                    if (living_cells.length < 2) {
-                        return 0
-                    } else if (living_cells.length === 2 || living_cells.length === 3) {
-                        return 1
-                    } else if (living_cells.length > 3) {
+                    if (alive < 2) {
+                        return 0;
+                    }else if (alive === 2 || alive === 3) {
+                        return 1;
+                    }else if (alive > 3) {
                         return 0
                     }
-                } else {
-                    if (living_cells.length === 3) {
-                        return 1
+                }else{
+                    if (alive === 3){
+                        return 1;
                     }
                 }
                 return value;
